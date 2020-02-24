@@ -1,24 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo, useState, useEffect } from "react";
+import axios from "axios";
+import TableComponent from "./components/table.js";
+import "./App.css";
 
-function App() {
+let App = () => {
+  const columns = useMemo(
+    () => /*const new2 = (x) => { return [{Header: x}, {accessor: 'item.'+x}] }*/
+    // let i = ['header1', 'header2', ...]
+    //let j = i.map(new2)
+    //columns j
+    [
+      {
+        Header: "Name",
+        accessor: "show.name"
+      },
+      {
+        Header: "Type",
+        accessor: "show.type"
+      },
+      {
+        Header: "Language",
+        accessor: "show.language"
+      },
+      {
+        Header: "Status",
+        accessor: "show.status"
+      }
+    ],[]
+  );
+
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      const result = await axios("https://api.tvmaze.com/search/shows?q=snow");
+      setData(result.data);
+    })();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <TableComponent columns={columns} data={data} />
     </div>
   );
 }
